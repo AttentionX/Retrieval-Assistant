@@ -1,0 +1,5 @@
+- 2/9
+    - Set up Server
+    - Implement basic algorithms
+    - Plan experiments
+    - Use ChatGPT API

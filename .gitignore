@@ -1,0 +1,5 @@
+# essential gitignore for node.js projects
+./node_modules
+./.DS_Store
+./.env
+./.dist
