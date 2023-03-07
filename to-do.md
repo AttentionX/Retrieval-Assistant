@@ -1,5 +1,9 @@
 - 2/9
     - Set up Server
+        - Set up landing page
+        - PDF upload
+        - Chat UI
+        - Database
     - Implement basic algorithms
     - Plan experiments
     - Use ChatGPT API
