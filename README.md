@@ -6,3 +6,15 @@
   1. Chunking
   2. Tokenization
   3. 검색, 수합
+
+## File Structure
+1. Server
+2. Local Testing
+    - run.js (Main file)
+    - ./samples (Sample text files)
+3. Retrieval Algorithms
+    - ./retrieval
+
+Run simple command line interface
+    node run.js
+
