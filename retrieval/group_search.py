@@ -1,0 +1,1 @@
+# Document is consisted of groups of embeddings (Instead of one embedding)
