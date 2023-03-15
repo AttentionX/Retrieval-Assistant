@@ -1,8 +1,20 @@
-from util import mongo_db, openai_api
+import sys
 
-# Read the file content
-with open('file.txt', 'r', encoding='utf-8') as file:
-    fileContent = file.read()
+from util import mongo_db, openai_api, pdf_to_txt
+
+file_path = '../samples/papers/transformer.txt'
+
+if len(sys.argv) == 2:
+    file_path = sys.argv[1]
+
+if(file_path.endswith('.pdf')):
+    print('PDF file detected')
+    pages = pdf_to_txt.convert(file_path)
+    fileContent = '\n\n'.join(pages)
+else:
+    # Read the file content
+    with open(file_path, 'r', encoding='utf-8') as file:
+        fileContent = file.read()
 
 while True:
     question = input('Ask a question about the file: ')
