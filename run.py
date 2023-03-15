@@ -16,17 +16,23 @@ else:
     with open(file_path, 'r', encoding='utf-8') as file:
         fileContent = file.read()
 
+db = mongo_db.init()
+
+chat_history = []
+
 while True:
     question = input('Ask a question about the file: ')
     
     # Save the question to the database
-    collection = mongo_db.db['questions']
+    collection = db['questions']
     collection.insert_one({'question': question})
+    chat_history.append({"role": "user", "content": question})
     print('Question saved to database')
     
-    answer = openai_api.chatGPT(fileContent, question)
+    answer = openai_api.chatGPT(fileContent, chat_history)
     
     # Save the answer to the database
-    collection = mongo_db.db['answers']
+    collection = db['answers']
     collection.insert_one({'question': question, 'answer': answer})
+    chat_history.append({"role": "assistant", "content": answer})
     print('Answer saved to database')
