@@ -1,7 +1,10 @@
 # Retrieval-Assistant
 
-Run the following in the command line before running the program
+- Run the following in the command line before running the program  
 ```export OPENAI_API_KEY=your_api_key```
+- Or alternatively store your api key in a .env file  
+```touch .env```   
+```OPENAI_API_KEY=your_api_key```
 
 ## Document 내에서 Retrieval을 잘하는 알고리즘 탐구하기
 1. BERT 기반 모델 학습
