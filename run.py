@@ -2,7 +2,7 @@ import sys
 
 from util import mongo_db, openai_api, pdf_to_txt
 
-file_path = '../samples/papers/transformer.txt'
+file_path = './samples/papers/transformer.txt'
 
 if len(sys.argv) == 2:
     file_path = sys.argv[1]
@@ -24,15 +24,15 @@ while True:
     question = input('Ask a question about the file: ')
     
     # Save the question to the database
-    collection = db['questions']
-    collection.insert_one({'question': question})
+    # collection = db['questions']
+    # collection.insert_one({'question': question})
     chat_history.append({"role": "user", "content": question})
     print('Question saved to database')
     
     answer = openai_api.chatGPT(fileContent, chat_history)
     
     # Save the answer to the database
-    collection = db['answers']
-    collection.insert_one({'question': question, 'answer': answer})
+    # collection = db['answers']
+    # collection.insert_one({'question': question, 'answer': answer})
     chat_history.append({"role": "assistant", "content": answer})
     print('Answer saved to database')
