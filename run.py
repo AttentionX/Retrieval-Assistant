@@ -1,6 +1,6 @@
 import sys
 
-from util import mongo_db, openai_api, pdf_to_txt
+from util import mongo_db, openai_api, pdf_to_txt, process
 
 file_path = './samples/papers/transformer.txt'
 
@@ -20,6 +20,8 @@ db = mongo_db.init()
 
 chat_history = []
 
+fileContent = process.max_length(fileContent, 7000)
+
 while True:
     question = input('Ask a question about the file: ')
     
@@ -27,12 +29,13 @@ while True:
     # collection = db['questions']
     # collection.insert_one({'question': question})
     chat_history.append({"role": "user", "content": question})
-    print('Question saved to database')
+    # print('Question saved to database')
     
     answer = openai_api.chatGPT(fileContent, chat_history)
+    print('Answer:', answer)
     
     # Save the answer to the database
     # collection = db['answers']
     # collection.insert_one({'question': question, 'answer': answer})
     chat_history.append({"role": "assistant", "content": answer})
-    print('Answer saved to database')
+    # print('Answer saved to database')

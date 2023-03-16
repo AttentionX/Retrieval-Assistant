@@ -1,7 +1,12 @@
+import os
 import openai
+from dotenv import load_dotenv
 
-# Define the OpenAI API parameters
-openai.api_key = '<YOUR_OPENAI_API_KEY>'
+load_dotenv()
+
+# Define the OpenAI API parametersx
+# openai.api_key = '<YOUR_OPENAI_API_KEY>'
+openai.api_key = os.environ.get('OPENAI_API_KEY')
 
 def gpt3(fileContent, question):
     # Send the OpenAI API request
@@ -22,7 +27,7 @@ def gpt3(fileContent, question):
     
 def chatGPT(fileContent, chat_history):
     engine = "gpt-3.5-turbo"
-    system = "You are a helpful assistant."
+    system = "You are a helpful assistant. You can answer questions soley based on the information given below. However, if the question can't be answered with the given information, you can answer it without referring to the given information while telling the user that you were unable to retrieve and information from the given information and ask the user for more information."
     messages = [
         {"role": "system", "content": system},
         {"role": "assistant", "content": fileContent},
