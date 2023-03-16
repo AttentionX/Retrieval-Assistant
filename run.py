@@ -20,7 +20,17 @@ db = mongo_db.init()
 
 chat_history = []
 
-fileContent = process.max_length(fileContent, 7000)
+fileContent = process.max_length(fileContent, 15000)
+
+chat_instruction = "You are a helpful assistant. You can answer questions soley based on the information given below. If the question can't be answered with the information given by the user, tell the user that you were unable to find the answer from the given information and ask the user if you should answer the question without referring to the given information."
+examples = '''
+For example, if the user asks a question that can't be answered with the given information, respond as follows:
+User: What is the GPT-10 architecture?
+Assistant: The infomation on the GPT-10 architecture is not provided in the information you have provided. Should I answer the question without referring to the given information?
+'''
+prompt = f'Given Information:\n----------\n{fileContent}\n----------'
+
+chat_history.append({"role": "assistant", "content": prompt})
 
 while True:
     question = input('Ask a question about the file: ')
@@ -31,7 +41,7 @@ while True:
     chat_history.append({"role": "user", "content": question})
     # print('Question saved to database')
     
-    answer = openai_api.chatGPT(fileContent, chat_history)
+    answer = openai_api.chatGPT(chat_history)
     print('Answer:', answer)
     
     # Save the answer to the database

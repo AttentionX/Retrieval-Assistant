@@ -25,13 +25,11 @@ def gpt3(fileContent, question):
     print('OpenAI API response:', answer)
     return answer
     
-def chatGPT(fileContent, chat_history):
+def chatGPT(chat_history):
     engine = "gpt-3.5-turbo"
-    system = "You are a helpful assistant. You can answer questions soley based on the information given below. However, if the question can't be answered with the given information, you can answer it without referring to the given information while telling the user that you were unable to retrieve and information from the given information and ask the user for more information."
+    system = "You are a helpful assistant. You can answer questions soley based on the information given below. If the question can't be answered with the information given by the user, tell the user that you were unable to find the answer from the given information and ask the user if you should answer the question on you own, without referring to the given information."
     messages = [
         {"role": "system", "content": system},
-        {"role": "assistant", "content": fileContent},
-        # {"role": "user", "content": question}
     ]
     
     messages = messages + chat_history
