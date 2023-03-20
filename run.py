@@ -27,6 +27,14 @@ For example, if the user asks a question that can't be answered with the given i
 User: What is the GPT-10 architecture?
 Assistant: The infomation on the GPT-10 architecture is not provided in the information you have provided. Should I answer the question without referring to the given information?
 '''
+
+multi_question_handling_example = '''
+If the user's query contains multiple questions, respond as follows:
+User's Query: What is the GPT-3 architecture and what training data was used to train GPT-3?
+Question1: What is the GPT-3 architecture?
+Question2: What is the GPT-3 training data?
+'''
+
 prompt = f'Given Information:\n----------\n{fileContent}\n----------'
 
 chat_history.append({"role": "assistant", "content": prompt})
