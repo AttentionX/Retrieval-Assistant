@@ -1,58 +1,32 @@
 import sys
 
-from util import mongo_db, openai_api, pdf_to_txt, process
+from util import openai_api, process
+from util.openai_api import customChatGPT, customGPT
+import retrieval
 
-file_path = './samples/papers/transformer.txt'
+def init_AI_Models():
+    system = "You are a helpful assistant."
+    system_model = customChatGPT("gpt-4", system)
+    user_model = customGPT("gpt-4", system)
+    return system_model, user_model
 
-if len(sys.argv) == 2:
-    file_path = sys.argv[1]
+def main():
+    file_path = './samples/papers/gpt-4.pdf'
 
-if(file_path.endswith('.pdf')):
-    print('PDF file detected')
-    pages = pdf_to_txt.convert(file_path)
-    fileContent = '\n\n'.join(pages)
-else:
-    # Read the file content
-    with open(file_path, 'r', encoding='utf-8') as file:
-        fileContent = file.read()
+    if len(sys.argv) == 2:
+        file_path = sys.argv[1]
 
-db = mongo_db.init()
+    fileType, fileContent = process.getFileInfo(file_path)
 
-chat_history = []
+    system_model, user_model = init_AI_Models()
 
-fileContent = process.max_length(fileContent, 15000)
+    retrieval_model = retrieval.Retrieval(fileContent, system_model, user_model, fileType)
 
-examples = '''
-For example, if the user asks a question that can't be answered with the given information, respond as follows:
-User: What is the GPT-10 architecture?
-Assistant: The infomation on the GPT-10 architecture is not provided in the information you have provided. Should I answer the question without referring to the given information?
-'''
+    while True:
+        question = input('Ask a question about the file: ')
 
-multi_question_handling_example = '''
-If the user's query contains multiple questions, respond as follows:
-User's Query: What is the GPT-3 architecture and what training data was used to train GPT-3?
-Question1: What is the GPT-3 architecture?
-Question2: What is the GPT-3 training data?
-'''
+        answer = retrieval_model.mainRetrieval(question)
+        print('Answer:', answer)
 
-prompt = f'Given Information:\n----------\n{fileContent}\n----------'
-
-chat_history.append({"role": "assistant", "content": prompt})
-
-while True:
-    question = input('Ask a question about the file: ')
-    
-    # Save the question to the database
-    # collection = db['questions']
-    # collection.insert_one({'question': question})
-    chat_history.append({"role": "user", "content": question})
-    # print('Question saved to database')
-    
-    answer = openai_api.chatGPT(chat_history)
-    print('Answer:', answer)
-    
-    # Save the answer to the database
-    # collection = db['answers']
-    # collection.insert_one({'question': question, 'answer': answer})
-    chat_history.append({"role": "assistant", "content": answer})
-    # print('Answer saved to database')
+if __name__ == "__main__":
+    main()

@@ -8,6 +8,10 @@ load_dotenv()
 # openai.api_key = '<YOUR_OPENAI_API_KEY>'
 openai.api_key = os.environ.get('OPENAI_API_KEY')
 
+def embedding(text):
+    text = text.replace("\n", " ")
+    return openai.Embedding.create(input = [text], model="text-embedding-ada-002")['data'][0]['embedding']
+
 def gpt3(fileContent, question):
     # Send the OpenAI API request
     engine = "text-davinci-003"
@@ -40,3 +44,34 @@ def chatGPT(chat_history):
     )
     answer = response.choices[0].message.content
     return answer
+
+class customChatGPT:
+    def __init__(self, engine, system, chat_history=None):
+        self.engine = engine
+        self.system = system
+        self.messages = [{"role": "system", "content": self.system},] + chat_history
+
+    def chat(self, message):
+        self.message = self.messages + message
+        
+        response = openai.ChatCompletion.create(
+            model = self.engine,
+            messages = self.messages,
+        )
+        answer = response.choices[0].message.content
+        return answer
+
+class customGPT:
+    def __init__(self, engine, prompt):
+        self.engine = engine
+        self.prompt = prompt
+
+    def chat(self, message):
+        response = openai.Completion.create(
+            engine=self.engine, 
+            prompt=f'{self.prompt}\n{message}',
+            temperature=0.1, 
+            max_tokens=1000
+        )
+        answer = response.choices[0]['text']
+        return answer    

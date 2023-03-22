@@ -1,8 +1,8 @@
 import PyPDF2
  
-file_path = '../samples/papers/transformer.pdf'
+# file_path = '../samples/papers/transformer.pdf'
 
-def pages(file_path):
+def convert(file_path):
     # Create file object variable
     # Opening method will be rb
     pdf_file = open(file_path,'rb')
