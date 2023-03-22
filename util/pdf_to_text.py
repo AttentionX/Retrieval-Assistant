@@ -17,9 +17,9 @@ def convert(file_path):
 
     # Print the text of each page in the pdf file
     for page in range(num_pages):
-        text = pdf_reader.getPage(page).extractText()
+        text = pdf_reader.getPage(page).extractText().lower()
         pages.append(text)
-        print(text)
+        # print(text)
     
     # Close the file object
     pdf_file.close()

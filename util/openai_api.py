@@ -46,19 +46,23 @@ def chatGPT(chat_history):
     return answer
 
 class customChatGPT:
-    def __init__(self, engine, system, chat_history=None):
+    def __init__(self, engine, system):
         self.engine = engine
         self.system = system
-        self.messages = [{"role": "system", "content": self.system},] + chat_history
+        self.messages = [{"role": "system", "content": self.system}]
 
     def chat(self, message):
-        self.message = self.messages + message
+        # print(self.messages)
+        self.messages.append({"role": "user", "content": message})
         
+        # print(self.messages)
+
         response = openai.ChatCompletion.create(
             model = self.engine,
             messages = self.messages,
         )
         answer = response.choices[0].message.content
+        self.messages.append({"role": "assistant", "content": answer})
         return answer
 
 class customGPT:

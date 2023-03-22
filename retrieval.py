@@ -1,5 +1,4 @@
 import numpy as np
-from functools import identity
 import math
 
 from util import openai_api, process
@@ -15,19 +14,28 @@ class Retrieval:
 
     def mainRetrieval(self, query):
         keywords = self.getKeywords(query)
-        sections = self.searchByKeywords(self.sections, keywords)
+        sections = self.searchByKeywords(keywords)
         return self.answerFromSections(sections, query, self.user_model)
 
     def getKeywords(self, query):
         prompt = """
         Extract the keywords from the following query with a separator ; (refer to the following two examples)
+
+        Examples:
         Query1: What is the GPT-3 architecture?
         Keywords: GPT-3; architecture
         Query2: What is the GPT-3 training data?
         Keywords: GPT-3; training data
+
         """
+
         api_prompt = f'{prompt}\nQuery: {query}\nKeywords: '
+        # api_prompt = [{"role": "user", "content": api_prompt}]
         keywords = self.system_model.chat(api_prompt).split('; ')
+        print('Query:', query)
+        print('Keywords:', keywords)
+        
+        keywords = [keyword.strip().lower() for keyword in keywords]
         return keywords
 
     def getMultiquestions(self, query, model:customChatGPT):
@@ -41,10 +49,11 @@ class Retrieval:
         Questions: What is the GPT-3 architecture?
         """
 
-    def searchByKeywords(sections, keywords):
+    def searchByKeywords(self, keywords):
+        sections = self.sections
         final_sections = None
         for keyword in keywords:
-            score_tensor = process.operate_2d_tensor(sections, keyword, math.sqrt)
+            score_tensor = process.operate_2d_tensor(sections, keyword, np.sqrt)
             if final_sections is None:
                 final_sections = score_tensor
             else:
@@ -64,8 +73,8 @@ class Retrieval:
             sections_string += '\n\n' + sections[i]
             i += 1
         api_prompt = f'Given Information:\n-----\n{sections_string}\n-----\n{prompt}\nQuestion: {query}\nAnswer: '
-        self.chat_history.append({"role": "user", "content": api_prompt})
+        # self.chat_history.append({"role": "user", "content": api_prompt})
 
-        answer = model.chat(self.chat_history)
-        self.chat_history.append({"role": "assistant", "content": answer})
+        answer = model.chat(api_prompt)
+        # self.chat_history.append({"role": "assistant", "content": answer})
         return answer

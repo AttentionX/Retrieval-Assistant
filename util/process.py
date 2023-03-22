@@ -1,7 +1,6 @@
 import numpy as np
 import re
-
-import pdf_to_text
+import PyPDF2
 
 def max_length(string, max_len):
     if len(string) > max_len:
@@ -28,7 +27,7 @@ def process_pages(pages):
 def getFileInfo(file_path):
     if(file_path.endswith('.pdf')):
         print('PDF file detected')
-        pages = pdf_to_text.convert(file_path)
+        pages = convert(file_path)
         # 2D Array
         fileContent = process_pages(pages)
         return 'pdf', fileContent
@@ -41,12 +40,20 @@ def getFileInfo(file_path):
         return 'txt', fileContent
     
 def operate_2d_tensor(count_array, keyword, func):
+    print('keyword: ', keyword)
     count_array = np.array(count_array)
 
+    
     count_array = np.char.count(count_array, keyword)
 
     # Reshape the count array to a 1D array
-    count_1d = count_array.reshape(-1)
+    count_1d = count_array.flatten()
+    # count_1d = count_array.reshape(-1)
+
+    # print((count_1d.shape))
+    
+    count_1d = count_1d.astype(float)
+    # count_1d = np.array(count_1d).astype(float)
     
     # Apply the softmax function to the 1D array
     softmax_1d = func(count_1d) / np.sum(func(count_1d))
@@ -73,3 +80,27 @@ def find_highest_positions(arr, k):
     
     # Return the list of (row, column) tuples
     return list(zip(*indices_rc))
+
+def convert(file_path):
+    # Create file object variable
+    # Opening method will be rb
+    pdf_file = open(file_path,'rb')
+    
+    # Create reader variable that will read the pdffileobj
+    pdf_reader = PyPDF2.PdfReader(pdf_file)
+    
+    # This will store the number of pages of this pdf file
+    num_pages = len(pdf_reader.pages)
+    
+    pages = []
+
+    # Print the text of each page in the pdf file
+    for page in range(num_pages):
+        text = pdf_reader.pages[page].extract_text().lower().strip()
+        pages.append(text)
+        # print(text)
+    
+    # Close the file object
+    pdf_file.close()
+    
+    return pages
