@@ -39,13 +39,7 @@ class Retrieval:
         keywords = [keyword[:-1] if (keyword[-1] == '.' or keyword[-1] == "?") else keyword for keyword in keywords]
         keywords = [keyword.strip().lower() for keyword in keywords]
         
-        # keywords_final = [chain(*[keyword.split(' ') for keyword in keywords])]
-        
-        keywords_final = []
-        for keyword in keywords:
-            keywords_split = keyword.split(' ')
-            for keyword_split in keywords_split:
-                keywords_final.append(keyword_split)
+        keywords_final = list(chain(*[keyword.split(' ') for keyword in keywords]))
 
         print('Keywords:', keywords_final)
         return keywords_final
