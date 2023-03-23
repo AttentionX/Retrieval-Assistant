@@ -38,7 +38,8 @@ class Retrieval:
         keywords = [keyword for keyword in keywords if keyword != '']
         keywords = [keyword[:-1] if (keyword[-1] == '.' or keyword[-1] == "?") else keyword for keyword in keywords]
         keywords = [keyword.strip().lower() for keyword in keywords]
-        # keywords = [chain([keyword.split(' ') for keyword in keywords])]
+        
+        # keywords_final = [chain(*[keyword.split(' ') for keyword in keywords])]
         
         keywords_final = []
         for keyword in keywords:
@@ -84,7 +85,7 @@ class Retrieval:
 
     def answerFromSections(self, sections, query, model:customChatGPT):
         prompt = """
-        Answer the following question only referring to the given information. Cite your sources if necessary by referring to the source number (ex. [1]) in your response.
+        Answer the following question only referring to the given information. Cite your sources if necessary by referring to the source number (ex. [1]) in your response (in the middle of the sentence).
         """
         # While less than max length, append sections to prompt
         sections_string = ''
