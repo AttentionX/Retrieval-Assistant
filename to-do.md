@@ -7,3 +7,7 @@
     - Implement basic algorithms
     - Plan experiments
     - Use ChatGPT API
+
+- 3/23
+    - Embedding (Query & Sections)
+    - Split keywrod by space ("MMLU Benchmark" -> "MMLU", "Benchmark")

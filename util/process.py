@@ -93,7 +93,7 @@ def operate_2d_tensor(count_array, keyword, func):
 def find_highest_positions(arr, k):
     arr = np.array(arr)
 
-    print(arr[:3])
+    print('process.py, find_highest_positions, first 3 scores:', arr[:3])
 
     # Flatten the array to 1D and get the indices of the top k values
     flat_indices = np.argsort(arr.flatten())[-k:]

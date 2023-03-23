@@ -1,1 +1,2 @@
 how does gpt-4 perform compared to gpt-3.5?
+How does GPT-4 perform in  TruthfulQA benchmark? 

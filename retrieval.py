@@ -1,5 +1,6 @@
 import numpy as np
 import math
+from itertools import chain
 
 from util import openai_api, process
 from util.openai_api import customChatGPT
@@ -37,9 +38,16 @@ class Retrieval:
         keywords = [keyword for keyword in keywords if keyword != '']
         keywords = [keyword[:-1] if (keyword[-1] == '.' or keyword[-1] == "?") else keyword for keyword in keywords]
         keywords = [keyword.strip().lower() for keyword in keywords]
+        # keywords = [chain([keyword.split(' ') for keyword in keywords])]
+        
+        keywords_final = []
+        for keyword in keywords:
+            keywords_split = keyword.split(' ')
+            for keyword_split in keywords_split:
+                keywords_final.append(keyword_split)
 
-        print('Keywords:', keywords)
-        return keywords
+        print('Keywords:', keywords_final)
+        return keywords_final
 
     def getMultiquestions(self, query, model:customChatGPT):
         prompt = """
@@ -55,10 +63,10 @@ class Retrieval:
     def searchByKeywords(self, keywords):
         sections = self.sections
         max_col_len = len(max(sections, key=len))
-        print('retrieval.py, searchByKeywords, max sections in one page', max_col_len)
+        print('retrieval.py, searchByKeywords, max sections in one page:', max_col_len)
         
         sections = np.array([np.pad(row, (0,max_col_len-len(row)), 'constant', constant_values='0') for row in sections])
-        print('retrieval.py, searchByKeywords, document sections shape', sections.shape)
+        print('retrieval.py, searchByKeywords, document sections shape:', sections.shape)
         
         final_sections = None
         for keyword in keywords:
@@ -70,19 +78,19 @@ class Retrieval:
         # print('retrieval.py, searchByKeywords, document sections shape', final_sections.shape)
         top_k = 3
         top_k_sections = process.find_highest_positions(final_sections, top_k)
-        print(top_k_sections)
+        print('retrieval.py, searchByKeywords, top selections:', top_k_sections)
         # exit()
         return [sections[row][col] for (row, col) in top_k_sections]
 
     def answerFromSections(self, sections, query, model:customChatGPT):
         prompt = """
-        Answer the following question only referring to the given information
+        Answer the following question only referring to the given information. Cite your sources if necessary by referring to the source number (ex. [1]) in your response.
         """
         # While less than max length, append sections to prompt
         sections_string = ''
         i = 0
-        while len(sections_string) + len('\n\n'+ sections[i]) < 2000:
-            sections_string += '\n\n' + sections[i]
+        while i < len(sections) and len(sections_string) + len('\n\n'+ sections[i]) < 2000:
+            sections_string += f'\n\n[{i+1}] ' + sections[i]
             i += 1
         api_prompt = f'Given Information:\n-----\n{sections_string}\n-----\n{prompt}\nQuestion: {query}\nAnswer: '
         # self.chat_history.append({"role": "user", "content": api_prompt})
