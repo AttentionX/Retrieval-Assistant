@@ -74,6 +74,10 @@ class Retrieval:
         top_k = 3
         top_k_sections = process.find_highest_positions(final_sections, top_k)
         print('retrieval.py, searchByKeywords, top selections:', top_k_sections)
+        i = 0
+        for (row, col) in top_k_sections:
+            print(f'References\n[{i+1}]', f"P. {row+1} Sec. {col+1}")
+            i += 1
         # exit()
         return [sections[row][col] for (row, col) in top_k_sections]
 
