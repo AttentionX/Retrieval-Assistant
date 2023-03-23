@@ -14,3 +14,4 @@
     - Adjust prompt for citing sources (Done)
     - Keyword Weights, based on importance
     - k ratio
+    - Stanford DSP (Keyword extraction that does't exist in the query)
