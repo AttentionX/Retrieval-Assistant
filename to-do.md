@@ -11,4 +11,6 @@
 - 3/23
     - Embedding (Query & Sections)
     - Split keywrod by space ("MMLU Benchmark" -> "MMLU", "Benchmark") (Done)
-    - Adjust prompt for citing sources
+    - Adjust prompt for citing sources (Done)
+    - Keyword Weights, based on importance
+    - k ratio
