@@ -4,10 +4,10 @@
         - PDF upload
         - Chat UI
         - Database
-    - Implement basic algorithms
+    - Implement basic algorithms (Done)
     - Plan experiments
-    - Use ChatGPT API
+    - Use ChatGPT API (Done)
 
 - 3/23
     - Embedding (Query & Sections)
-    - Split keywrod by space ("MMLU Benchmark" -> "MMLU", "Benchmark")
+    - Split keywrod by space ("MMLU Benchmark" -> "MMLU", "Benchmark") (Done)
