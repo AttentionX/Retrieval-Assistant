@@ -89,7 +89,8 @@ class Retrieval:
         # While less than max length, append sections to prompt
         sections_string = ''
         i = 0
-        while i < len(sections) and len(sections_string) + len('\n\n'+ sections[i]) < 3000:
+        max_length_context = 5000
+        while i < len(sections) and len(sections_string) + len('\n\n'+ sections[i]) < max_length_context:
             sections_string += f'\n\n[{i+1}] ' + sections[i]
             i += 1
         api_prompt = f'Given Information:\n-----\n{sections_string}\n-----\n{prompt}\nQuestion: {query}\nAnswer: '
