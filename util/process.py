@@ -8,14 +8,33 @@ def max_length(string, max_len):
     
 def process_page(page):
     final_sections = []
-    sections = page.split('\n')
+    sections = page.split('.\n')
+    sections = [re.sub('\s+', ' ', section).strip() for section in sections]
+
+    # Remove redundant spaces
+    # section = re.sub('\s+', ' ', section)
+    # Remove space at the beginning of the string
+    # section = section.strip()
+
+    # print(len(sections), sections[:5])
+    # exit()
+
+    skip = []
+    i = 0
+    j = 0
     for section in sections:
-        # Remove redundant spaces
-        section = re.sub('\s+', ' ', section)
-        # Remove space at the beginning of the string
-        section = section.strip()
-        if len(section) > 50:
-            final_sections.append(section)
+        if i in skip:
+            i += 1
+            continue
+        
+        while j < len(sections) - 1 and len(section) < 300:
+            j += 1
+            section += '. ' + sections[j]
+            skip.append(j)
+        final_sections.append(section)
+        i += 1
+        if i > j:
+            j = i
     return final_sections
 
 def process_pages(pages):
@@ -40,11 +59,14 @@ def getFileInfo(file_path):
         return 'txt', fileContent
     
 def operate_2d_tensor(count_array, keyword, func):
-    print('keyword: ', keyword)
+    # print('keyword: ', keyword)
     count_array = np.array(count_array)
-
+    # print(count_array[:3])
     
     count_array = np.char.count(count_array, keyword)
+
+    # print(count_array[:3])
+    # exit()
 
     # Reshape the count array to a 1D array
     count_1d = count_array.flatten()
@@ -54,6 +76,9 @@ def operate_2d_tensor(count_array, keyword, func):
     
     count_1d = count_1d.astype(float)
     # count_1d = np.array(count_1d).astype(float)
+
+    if np.sum(func(count_1d)) == 0:
+        return count_array
     
     # Apply the softmax function to the 1D array
     softmax_1d = func(count_1d) / np.sum(func(count_1d))
@@ -61,10 +86,24 @@ def operate_2d_tensor(count_array, keyword, func):
     # Reshape the softmax output back to the original shape
     softmax_tensor = softmax_1d.reshape(count_array.shape)
     
-    return softmax_tensor.tolist()
+    # softmax_tensor.tolist()
+
+    return softmax_tensor
 
 def find_highest_positions(arr, k):
     arr = np.array(arr)
+
+    print(arr[:3])
+
+    # Flatten the array to 1D and get the indices of the top k values
+    flat_indices = np.argsort(arr.flatten())[-k:]
+
+    # Convert the flat indices back to row and column indices
+    row_indices, col_indices = np.unravel_index(flat_indices, arr.shape)
+
+    # Print the result
+    return list(zip(row_indices, col_indices)) 
+    print(list(zip(row_indices, col_indices)))
 
     # Flatten the 2D array into a 1D array
     arr_flat = arr.flatten()

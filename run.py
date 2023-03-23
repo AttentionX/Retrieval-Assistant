@@ -9,7 +9,8 @@ def init_AI_Models():
     chatGPT = "gpt-3.5-turbo"
     GPT4 = "gpt-4"
     system_model = customChatGPT(chatGPT, system)
-    user_model = customGPT(chatGPT, system)
+    # system_model = customChatGPT(GPT4, system)
+    user_model = customChatGPT(chatGPT, system)
     return system_model, user_model
 
 def main():
@@ -21,6 +22,9 @@ def main():
     fileType, fileContent = getFileInfo(file_path)
 
     system_model, user_model = init_AI_Models()
+
+    # print(len(fileContent[0]), 'sections detected')
+    # print(fileContent[0][:5])
 
     retrieval_model = retrieval.Retrieval(fileContent, system_model, user_model, fileType)
 

@@ -33,9 +33,12 @@ class Retrieval:
         # api_prompt = [{"role": "user", "content": api_prompt}]
         keywords = self.system_model.chat(api_prompt).split('; ')
         print('Query:', query)
-        print('Keywords:', keywords)
-        
+
+        keywords = [keyword for keyword in keywords if keyword != '']
+        keywords = [keyword[:-1] if (keyword[-1] == '.' or keyword[-1] == "?") else keyword for keyword in keywords]
         keywords = [keyword.strip().lower() for keyword in keywords]
+
+        print('Keywords:', keywords)
         return keywords
 
     def getMultiquestions(self, query, model:customChatGPT):
@@ -51,6 +54,12 @@ class Retrieval:
 
     def searchByKeywords(self, keywords):
         sections = self.sections
+        max_col_len = len(max(sections, key=len))
+        print('retrieval.py, searchByKeywords, max sections in one page', max_col_len)
+        
+        sections = np.array([np.pad(row, (0,max_col_len-len(row)), 'constant', constant_values='0') for row in sections])
+        print('retrieval.py, searchByKeywords, document sections shape', sections.shape)
+        
         final_sections = None
         for keyword in keywords:
             score_tensor = process.operate_2d_tensor(sections, keyword, np.sqrt)
@@ -58,8 +67,11 @@ class Retrieval:
                 final_sections = score_tensor
             else:
                 final_sections = final_sections + score_tensor
+        # print('retrieval.py, searchByKeywords, document sections shape', final_sections.shape)
         top_k = 3
         top_k_sections = process.find_highest_positions(final_sections, top_k)
+        print(top_k_sections)
+        # exit()
         return [sections[row][col] for (row, col) in top_k_sections]
 
     def answerFromSections(self, sections, query, model:customChatGPT):
