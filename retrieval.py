@@ -20,7 +20,7 @@ class Retrieval:
 
     def getKeywords(self, query):
         prompt = """
-        Extract the keywords from the following query with a separator ; (refer to the following two examples)
+        Extract the keywords from the following query with a separator ; (refer to the following two examples, list the keywords in the order of importance)
 
         Examples:
         Query1: What is the GPT-3 architecture?
@@ -74,13 +74,16 @@ class Retrieval:
         top_k = len(keywords) if len(keywords) > 3 else 3
         top_k_sections = process.find_highest_positions(final_sections, top_k)
         print('retrieval.py, searchByKeywords, top selections:', top_k_sections)
+
+        reference_sections = [sections[row][col] for (row, col) in top_k_sections]
+
         i = 0
         print('References')
         for (row, col) in top_k_sections:
-            print(f'[{i+1}]', f"P. {row+1} Sec. {col+1}")
+            print(f'[{i+1}]', f"P. {row+1}\t Sec. {col+1}", f"\t({' '.join(reference_sections[i].split(' ')[:3])} ... {' '.join(reference_sections[i].split(' ')[-3:])})")
             i += 1
         # exit()
-        return [sections[row][col] for (row, col) in top_k_sections]
+        return reference_sections
 
     def answerFromSections(self, sections, query, model:customChatGPT):
         prompt = """
@@ -89,10 +92,11 @@ class Retrieval:
         # While less than max length, append sections to prompt
         sections_string = ''
         i = 0
-        max_length_context = 5000
+        max_length_context = 10000
         while i < len(sections) and len(sections_string) + len('\n\n'+ sections[i]) < max_length_context:
             sections_string += f'\n\n[{i+1}] ' + sections[i]
             i += 1
+        print('retrieval.py, answerFromSections, used refereences:', i)
         api_prompt = f'Given Information:\n-----\n{sections_string}\n-----\n{prompt}\nQuestion: {query}\nAnswer: '
         # self.chat_history.append({"role": "user", "content": api_prompt})
 
