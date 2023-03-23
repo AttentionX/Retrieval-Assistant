@@ -8,10 +8,10 @@ def init_AI_Models():
     system = "You are a helpful assistant."
     chatGPT = "gpt-3.5-turbo"
     GPT4 = "gpt-4"
-    # system_model = customChatGPT(chatGPT, system)
-    # user_model = customChatGPT(chatGPT, system)
-    system_model = customChatGPT(GPT4, system)
-    user_model = customChatGPT(GPT4, system)
+    system_model = customChatGPT(chatGPT, system)
+    user_model = customChatGPT(chatGPT, system)
+    # system_model = customChatGPT(GPT4, system)
+    # user_model = customChatGPT(GPT4, system)
     return system_model, user_model
 
 def main():
