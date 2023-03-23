@@ -71,12 +71,13 @@ class Retrieval:
             else:
                 final_sections = final_sections + score_tensor
         # print('retrieval.py, searchByKeywords, document sections shape', final_sections.shape)
-        top_k = 3
+        top_k = len(keywords) if len(keywords) > 3 else 3
         top_k_sections = process.find_highest_positions(final_sections, top_k)
         print('retrieval.py, searchByKeywords, top selections:', top_k_sections)
         i = 0
+        print('References')
         for (row, col) in top_k_sections:
-            print(f'References\n[{i+1}]', f"P. {row+1} Sec. {col+1}")
+            print(f'[{i+1}]', f"P. {row+1} Sec. {col+1}")
             i += 1
         # exit()
         return [sections[row][col] for (row, col) in top_k_sections]
@@ -88,7 +89,7 @@ class Retrieval:
         # While less than max length, append sections to prompt
         sections_string = ''
         i = 0
-        while i < len(sections) and len(sections_string) + len('\n\n'+ sections[i]) < 2000:
+        while i < len(sections) and len(sections_string) + len('\n\n'+ sections[i]) < 3000:
             sections_string += f'\n\n[{i+1}] ' + sections[i]
             i += 1
         api_prompt = f'Given Information:\n-----\n{sections_string}\n-----\n{prompt}\nQuestion: {query}\nAnswer: '

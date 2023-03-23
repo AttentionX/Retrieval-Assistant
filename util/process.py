@@ -11,11 +11,6 @@ def process_page(page):
     sections = page.split('.\n')
     sections = [re.sub('\s+', ' ', section).strip() for section in sections]
 
-    # Remove redundant spaces
-    # section = re.sub('\s+', ' ', section)
-    # Remove space at the beginning of the string
-    # section = section.strip()
-
     # print(len(sections), sections[:5])
     # exit()
 
@@ -103,22 +98,6 @@ def find_highest_positions(arr, k):
 
     # Print the result
     return list(zip(row_indices, col_indices)) 
-    print(list(zip(row_indices, col_indices)))
-
-    # Flatten the 2D array into a 1D array
-    arr_flat = arr.flatten()
-    
-    # Find the indices of the k highest values in the flattened array
-    indices_flat = np.argpartition(arr_flat, -k)[-k:]
-    
-    # Convert the flattened indices back to row and column indices in the 2D array
-    indices_rc = np.unravel_index(indices_flat, arr.shape)
-    
-    # Reverse the order of the indices so that the highest values come first
-    indices_rc = list(reversed(indices_rc))
-    
-    # Return the list of (row, column) tuples
-    return list(zip(*indices_rc))
 
 def convert(file_path):
     # Create file object variable
